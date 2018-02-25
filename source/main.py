@@ -35,7 +35,6 @@ def search(dirname):
 	except:
 		pass
 
-#EventLog(DriveFramwork) : 연결/해제 쌍
 def eventLog():
 	global Geventlog
 	Geventlog = []
@@ -131,6 +130,20 @@ def regParse():
 	except:
 		pass
 	# print(GserialNumber)
+
+	key = _winreg.OpenKey(HKLMReg, usbPath2)
+	i=0
+	try:
+		while True:
+			val_key = _winreg.EnumKey(key, i)
+			serialNumbkey = usbPath2 + "\\" + val_key
+			subKey = _winreg.OpenKey(HKLMReg, serialNumbkey)
+			serialNumb = _winreg.EnumKey(subKey, 0)
+			# print("serial numb: " + serialNumb)
+			GserialNumber.append(serialNumb)
+			i = i+1
+	except:
+		pass
 
 	volumeNamePath = "SOFTWARE\\Microsoft\\Windows Portable Devices\\Devices"
 	key = _winreg.OpenKey(HKLMReg, volumeNamePath)
@@ -331,30 +344,42 @@ def shellBag():
 
 def main():
 	# EventLog
-	# eventLog()
+	try:
+		eventLog()
+	except:
+		print "eventLog Parsing Error"
+		pass
 	
 	# Registry & setupAPI
-	# regParse()
-	# setupApi()
-	# FileWrite()
+	try:
+		regParse()
+		setupApi()
+		FileWrite()
+	except:
+		print "Registry and setupAPI Parsing Error"
+		pass
 
 	# LNK
-	# search("LNK\\Users\\Dev")
-	# file = open('./output_lnk.csv', 'w')
-	# title = "Filename,TargetModifyTime,VolumeSerial,localBasePath\n"
-	# file.write(title)
-	# for nu in Glnk:
-	# 	file.write(','.join(nu))
-	# 	file.write('\n')
-	# file.close()
+	try:
+		search("LNK\\Users\\Dev")
+		file = open('./output_lnk.csv', 'w')
+		title = "Filename,TargetModifyTime,VolumeSerial,localBasePath\n"
+		file.write(title)
+		for nu in Glnk:
+			file.write(','.join(nu))
+			file.write('\n')
+		file.close()
+	except:
+		print "LNK parsing error"
+		pass
 
 	# ShellBag
-	# getHive("C:")
-	# shellBag()
-
-
-
-
+	try:
+		getHive("C:")
+		shellBag()
+	except:
+		print "ShellBag parsing Error"
+		pass
 
 if __name__ == "__main__":
 	main()
