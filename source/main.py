@@ -361,7 +361,7 @@ def main():
 
 	# LNK
 	try:
-		search("LNK\\Users\\Dev")
+		search("C:\\Users")
 		file = open('./output_lnk.csv', 'w')
 		title = "Filename,TargetModifyTime,VolumeSerial,localBasePath\n"
 		file.write(title)
